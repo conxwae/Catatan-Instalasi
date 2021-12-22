@@ -1,4 +1,37 @@
 ############################################################################################################################
+Setup Certbot to acquire Let's Encrypt TLS Certificate
+############################################################################################################################
+
+Uninstall Certbot Jika pernah diinstall
+sudo apt remove python-certbot-nginx
+sudo apt remove certbot
+sudo apt purge certbot
+sudo apt-get autoclean
+
+# Make sure to use purge
+sudo apt-get autoremove
+# OR
+sudo apt-get --purge autoremove
+
+INSTALL CERTBOOT
+sudo apt-get install software-properties-common tcl
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt update
+sudo apt install certbot
+
+Jika menggunakan Firewall ufw 
+Beriakses PORT 80
+sudo ufw allow 80
+
+Jalankan Certbot
+*Sesuaikan dengan nama domain anda dengan mengganti domain mqtt.conxwae.com  
+sudo certbot certonly --standalone --preferred-challenges http -d mqtt.conxwae.com
+
+Isi sesuai yang diminta
+
+sudo ls /etc/letsencrypt/live/mqtt.conxwae.com
+
+############################################################################################################################
 Install and configure Mosquitto MQTT broker
 ############################################################################################################################
 Sumber:
@@ -48,6 +81,27 @@ sudo ufw allow 8083
 Cek koneksi dari localhost dengan menggunakan teriminal
 mosquitto_sub -h localhost -t mqtt_topic_name -u "username" -P "password"
 
-
 buka terminal dari luar hosting dengan menggunakan
 mosquitto_pub -h mqtt.conxwae.com -t test -m "Hello MQTT World" -p 8883 --capath /etc/ssl/certs/ -u "username" -P "password"
+
+############################################################################################################################
+Adding renew hooks to Certbot
+############################################################################################################################
+Gunakan Crontab
+crontab -e
+no crontab for keiro - using an empty one
+
+Select an editor.  To change later, run 'select-editor'.
+  1. /bin/ed
+  2. /bin/nano        <---- easiest
+  3. /usr/bin/vim.basic
+
+Choose 1-3 [2]: 2
+crontab: installing new crontab
+
+tambahkan di crontab
+# Append renew hook
+0 */12 * * * root test -x /usr/bin/certbot -a \! -d /run/systemd/system && perl -e 'sleep int(rand(43200))' && certbot -q renew --renew-hook "systemctl restart mosquitto.service"
+
+Then save your file and run following command to test your new renew conf file:
+sudo certbot renew --dry-run
