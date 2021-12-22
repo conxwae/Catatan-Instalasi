@@ -78,10 +78,11 @@ Buka akses PORT 8883 dan 8083
 sudo ufw allow 8883
 sudo ufw allow 8083
 
-Cek koneksi dari localhost dengan menggunakan teriminal
+TEST Koneksi MQTT
+Cek koneksi dari localhost dengan menggunakan terminal
 mosquitto_sub -h localhost -t mqtt_topic_name -u "username" -P "password"
 
-buka terminal dari luar hosting dengan menggunakan
+buka terminal dari luar hosting
 mosquitto_pub -h mqtt.conxwae.com -t test -m "Hello MQTT World" -p 8883 --capath /etc/ssl/certs/ -u "username" -P "password"
 
 ############################################################################################################################
