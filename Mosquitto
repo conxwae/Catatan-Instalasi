@@ -1,0 +1,53 @@
+############################################################################################################################
+Install and configure Mosquitto MQTT broker
+############################################################################################################################
+Sumber:
+https://mosquitto.org/download/
+
+sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
+sudo apt update
+sudo apt install mosquitto
+
+membuat akun Mosquitto untuk pertama kali "-c" USER dan Password
+sudo mosquitto_passwd -c /etc/mosquitto/passwd username
+
+User "username"
+Pass "password"
+
+sudo nano /etc/mosquitto/pwfile
+
+Buka file konfigurasi Mosquitto
+sudo nano /etc/mosquitto/conf.d/custom.conf
+
+ISI dengan Script:
+================================================================
+allow_anonymous false
+password_file /etc/mosquitto/pwfile
+listener 1883 localhost
+listener 8883
+certfile /etc/letsencrypt/live/mqtt.example.com/cert.pem
+cafile /etc/letsencrypt/live/mqtt.example.com/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.example.com/privkey.pem
+listener 8083
+protocol websockets
+certfile /etc/letsencrypt/live/mqtt.example.com/cert.pem
+cafile /etc/letsencrypt/live/mqtt.example.com/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.example.com/privkey.pem
+================================================================
+
+Mengijinkan Mosquitto untuk mengaksess Sertifikat
+sudo setfacl -R -m u:mosquitto:rX /etc/letsencrypt/{live,archive}
+
+Jalankan Mosquitto
+sudo systemctl restart mosquitto
+
+Buka akses PORT 8883 dan 8083
+sudo ufw allow 8883
+sudo ufw allow 8083
+
+Cek koneksi dari localhost dengan menggunakan teriminal
+mosquitto_sub -h localhost -t mqtt_topic_name -u "username" -P "password"
+
+
+buka terminal dari luar hosting dengan menggunakan
+mosquitto_pub -h mqtt.conxwae.com -t test -m "Hello MQTT World" -p 8883 --capath /etc/ssl/certs/ -u "username" -P "password"
