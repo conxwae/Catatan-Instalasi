@@ -1,10 +1,10 @@
 # Catatan-Instalasi
-Kumpulan log instalasi pribadi
+Kumpulan log instalasi pribadi pada VPS dengan OS Ubuntu 18.04LTS 
 
-Installasi Mosquitto SSL pada VPS dengan OS Ubuntu 18.04LTS <a href="ttps://github.com/conxwae/Catatan-Instalasi/blob/main/Mosquitto">MosquttoSSL</a> h
+Mosquitto SSL <a href="https://github.com/conxwae/Catatan-Instalasi/blob/main/Mosquitto">MosquttoSSL</a> 
 
-Instalasi Redis database
+Redis database
 
-Instalasi Postgesql 
+Postgesql 
 
-Installasi Chirpstack Server Lorawan VPS 
+Chirpstack Server Lorawan VPS 
