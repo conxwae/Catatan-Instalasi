@@ -1,0 +1,94 @@
+############################################################################################################################
+Install database Redis dan POSTGRESQL
+############################################################################################################################
+Sumber: 
+https://redis.io/topics/quickstart
+
+============================
+INSTALL REDIS
+============================
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+make test
+
+Copy n Paste dari direktori redis-stable supaya bisa diakses dari luar
+sudo cp src/redis-server /usr/local/bin/
+sudo cp src/redis-cli /usr/local/bin/
+atau menggunakan
+sudo make install
+
+Cek menggunakan perintah
+redis-server
+
+redis-cli ping
+redis 127.0.0.1:6379> ping
+PONG
+redis 127.0.0.1:6379> set mykey somevalue
+OK
+redis 127.0.0.1:6379> get mykey
+"somevalue"
+
+kemudian
+redis-cli shutdown
+
+Installing Redis more properly
+sudo mkdir /etc/redis
+sudo mkdir /var/redis
+
+Copy redis utililiti dari folder redis-stable
+sudo cp utils/redis_init_script /etc/init.d/redis_6379
+
+Edit Skrip init
+sudo nano /etc/init.d/redis_6379
+
+Salin file konfigurasi template yang akan Anda temukan di direktori root distribusi Redis ke /etc/redis/ menggunakan nomor port sebagai nama, misalnya:
+sudo cp redis.conf /etc/redis/6379.conf
+
+Buat direktori di dalam /var/redis yang akan berfungsi sebagai data dan direktori kerja untuk instance Redis ini:
+sudo mkdir /var/redis/6379
+
+Edit file konfigurasi, pastikan untuk melakukan perubahan berikut:
+
+=====================================
+Setel daemonize ke yes (secara default disetel ke no).
+Setel pidfile ke /var/run/redis_6379.pid(ubah port jika diperlukan).
+Ubah port yang sesuai. Dalam contoh kami ini tidak diperlukan karena port default sudah 6379.
+Setel loglevel pilihan Anda .
+Setel file log ke/var/log/redis_6379.log
+Setel dir ke /var/redis/6379 (langkah yang sangat penting!)
+=====================================
+
+Terakhir tambahkan skrip init Redis baru ke semua runlevel default menggunakan perintah berikut:
+sudo update-rc.d redis_6379 defaults
+
+Selesai! Sekarang Anda dapat mencoba menjalankan instance Anda dengan:
+sudo /etc/init.d/redis_6379 start
+
+Pastikan semuanya berfungsi seperti yang diharapkan:
+
+Coba ping instance Anda dengan redis-cli.
+Lakukan uji simpan dengan "redis-cli save" dan periksa apakah file dump disimpan dengan benar ke /var/redis/6379/ (Anda harus menemukan file bernama dump.rdb).
+Periksa apakah instance Redis Anda masuk dengan benar di file log.
+Jika ini adalah mesin baru di mana Anda dapat mencobanya tanpa masalah, pastikan setelah reboot semuanya masih berfungsi.
+
+Restart Redis
+sudo systemctl restart redis-server
+
+============================
+INSTALL POSTGRESQL
+============================
+
+# Create the file repository configuration:
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+# Import the repository signing key:
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+# Update the package lists:
+sudo apt-get update
+
+# Install the latest version of PostgreSQL.
+# If you want a specific version, use 'postgresql-12' or similar instead of 'postgresql':
+sudo apt-get -y install postgresql
